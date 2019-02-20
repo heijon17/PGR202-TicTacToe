@@ -10,16 +10,99 @@
     <ImageView
             android:layout_width="329dp"
             android:layout_height="322dp" app:srcCompat="@drawable/tttbackground"
-            android:id="@+id/imageView3"
+            android:id="@+id/img_background"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp" android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"/>
     <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp" app:srcCompat="@color/white"
-            android:id="@+id/img_test" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/imageView3"/>
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_1"
+            app:layout_constraintStart_toStartOf="@+id/img_background"
+            android:layout_marginStart="16dp" android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="@+id/img_background"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_4"
+            app:layout_constraintStart_toStartOf="@+id/img_background"
+            android:layout_marginStart="16dp" android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_game_1"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_7"
+            app:layout_constraintStart_toStartOf="@+id/img_game_4"
+            android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/img_game_4"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_8"
+            app:layout_constraintStart_toStartOf="@+id/img_game_5"
+            android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/img_game_5"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_9"
+            app:layout_constraintStart_toStartOf="@+id/img_game_6"
+            android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/img_game_6"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_5"
+            app:layout_constraintStart_toStartOf="@+id/img_game_2" android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_game_2"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_6"
+            app:layout_constraintStart_toStartOf="@+id/img_game_3"
+            android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/img_game_3"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_2"
+            app:layout_constraintStart_toEndOf="@+id/img_game_1" android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/img_game_3" android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toTopOf="@+id/img_background"/>
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp" app:srcCompat="@color/white"
+            android:id="@+id/img_game_3"
+            app:layout_constraintEnd_toEndOf="@+id/img_background" android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp" app:layout_constraintTop_toTopOf="@+id/img_background"/>
+    <TextView
+            android:text="@string/time_played"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_time" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+            android:text="@string/p1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5" app:layout_constraintStart_toStartOf="@+id/img_background"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/txt_p1"/>
+    <TextView
+            android:text="@string/p2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView6"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/txt_p2" app:layout_constraintStart_toStartOf="@+id/txt_p2"
+    />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/txt_p1" app:layout_constraintStart_toStartOf="@+id/img_background"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/img_background"
+            android:fontFamily="@font/architects_daughter" android:textSize="24sp"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/txt_p2"
+            app:layout_constraintBottom_toTopOf="@+id/img_background"
+            android:layout_marginBottom="8dp" android:fontFamily="@font/architects_daughter" android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="@+id/img_background"/>
 </android.support.constraint.ConstraintLayout>

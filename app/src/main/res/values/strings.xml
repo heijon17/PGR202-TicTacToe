@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Tic Tac Toe</string>
-    <string name="p1">Player 1</string>
-    <string name="p2">Player 2</string>
+    <string name="p1">Player 1 (X)</string>
+    <string name="p2">Player 2 (O)</string>
     <string name="name">Name</string>
     <string name="vsCpu">Play vs CPU</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="start">Start</string>
-
+    <string name="time_played">Time played: 0 seconds</string>
 
 </resources>
