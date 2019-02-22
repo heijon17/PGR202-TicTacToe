@@ -5,7 +5,10 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_game.*
 import pl.droidsonroids.gif.GifDrawable
+import kotlin.concurrent.fixedRateTimer
+import kotlin.concurrent.timer
 
 
 class Game : AppCompatActivity() {
@@ -54,9 +57,7 @@ class Game : AppCompatActivity() {
             }
         }
 
-
-
-
+        calcTimeUsed()
     }
 
     private fun clickedImage(btn: ImageView) {
@@ -74,8 +75,6 @@ class Game : AppCompatActivity() {
             R.id.img_game_8 -> position = 8
             R.id.img_game_9 -> position = 9
         }
-
-
 
         if(playersTurn == 1){
             btn.setImageDrawable(GifDrawable(resources, R.drawable.tttx))
@@ -117,8 +116,25 @@ class Game : AppCompatActivity() {
     }
 
     private fun winner(player: Int) {
-        println("winner is player $player")
+        val alert = Alert("The winner is player $player", img_background)
+        alert.generate()
         for(btn in btnList) btn.isClickable = false
+    }
+
+    fun calcTimeUsed(){
+        var secondsUsed = 0
+        var minutesUsed = 0
+        timer("timeCounter", false, 1000, 1000) {
+            secondsUsed++
+            if(secondsUsed % 60 == 0) {
+                minutesUsed++
+                secondsUsed = 0
+            }
+            val timeUsed = String.format("%d:%02d", minutesUsed, secondsUsed)
+            this@Game.runOnUiThread {
+                txt_time.text = "Time played: $timeUsed"
+            }
+        }
     }
 
 }
