@@ -8,5 +8,9 @@
     <string name="no">No</string>
     <string name="start">Start</string>
     <string name="time_played">Time played: 0 seconds</string>
+    <string name="highscores">Highscores:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">This is the Score</string>
 
 </resources>

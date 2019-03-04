@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_game.*
 import pl.droidsonroids.gif.GifDrawable
-import kotlin.concurrent.fixedRateTimer
+import java.util.*
 import kotlin.concurrent.timer
 
 
@@ -15,9 +15,16 @@ class Game : AppCompatActivity() {
 
     var playersTurn = 1
 
+    var secondsUsed = 0
+    var minutesUsed = 0
+    var timer = Timer()
+
     val btnList = ArrayList<ImageView>()
     var xPos = ArrayList<Int>()
     var oPos = ArrayList<Int>()
+
+    private lateinit var txtPlayer1: TextView
+    private lateinit var txtPlayer2: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +32,8 @@ class Game : AppCompatActivity() {
 
         val intent = intent
 
-        val txtPlayer1: TextView = findViewById(R.id.txt_p1)
-        val txtPlayer2: TextView = findViewById(R.id.txt_p2)
+        txtPlayer1 = findViewById(R.id.txt_p1)
+        txtPlayer2 = findViewById(R.id.txt_p2)
 
         txtPlayer1.text = intent.getStringExtra("p1")
         txtPlayer2.text = intent.getStringExtra("p2")
@@ -57,7 +64,15 @@ class Game : AppCompatActivity() {
             }
         }
 
-        calcTimeUsed()
+
+        val fm = supportFragmentManager
+        val transaction = fm.beginTransaction()
+        transaction.replace(R.id.fr_container, Score())
+        transaction.commit()
+
+
+
+        startTimer()
     }
 
     private fun clickedImage(btn: ImageView) {
@@ -87,7 +102,7 @@ class Game : AppCompatActivity() {
         }
 
         calculateWinner()
-        println(xPos.toString())
+
 
     }
 
@@ -116,17 +131,43 @@ class Game : AppCompatActivity() {
     }
 
     private fun winner(player: Int) {
-        val alert = Alert("The winner is player $player", img_background)
-        alert.generate()
+//        val alert = Alert("The winner is player $player", img_background)
+//        alert.generate()
+
+
+        val bundle = Bundle()
+        bundle.putInt("winner", player)
+        if(player == 1) bundle.putString("name", txtPlayer1.text.toString())
+        if(player == 2) bundle.putString("name", txtPlayer2.text.toString())
+        val gameover = GameOver()
+        gameover.arguments = bundle
+
+
+        val fm = supportFragmentManager
+        val transaction = fm.beginTransaction()
+        transaction.replace(R.id.fr_container, gameover)
+
+        transaction.commit()
+
+
         for(btn in btnList) btn.isClickable = false
     }
 
-    fun calcTimeUsed(){
-        var secondsUsed = 0
-        var minutesUsed = 0
-        timer("timeCounter", false, 1000, 1000) {
+    fun startTimer(){
+        minutesUsed = 0
+        secondsUsed = 0
+
+        resumeTimer()
+    }
+
+    private fun pauseTimer(){
+        this.timer.cancel()
+    }
+
+    private fun resumeTimer() {
+        timer = timer("timeCounter", false, 1000, 1000) {
             secondsUsed++
-            if(secondsUsed % 60 == 0) {
+            if (secondsUsed % 60 == 0) {
                 minutesUsed++
                 secondsUsed = 0
             }
