@@ -3,11 +3,18 @@ package no.jmheiberg.jonma.tictactoe
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_game.*
 import pl.droidsonroids.gif.GifDrawable
+import java.io.File
+import java.io.FileOutputStream
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.timer
 
 
@@ -22,6 +29,8 @@ class Game : AppCompatActivity() {
     val btnList = ArrayList<ImageView>()
     var xPos = ArrayList<Int>()
     var oPos = ArrayList<Int>()
+
+    var players: List<PlayerScore> = ArrayList()
 
     private lateinit var txtPlayer1: TextView
     private lateinit var txtPlayer2: TextView
@@ -38,15 +47,6 @@ class Game : AppCompatActivity() {
         txtPlayer1.text = intent.getStringExtra("p1")
         txtPlayer2.text = intent.getStringExtra("p2")
 
-
-
-//        val imgTest: ImageView  = findViewById(R.id.img_game_1)
-//
-//        imgTest.setOnClickListener{
-//            val drawable = GifDrawable(resources, R.drawable.ttto)
-//            imgTest.setImageDrawable(drawable)
-//
-//        }
 
         btnList.add(findViewById(R.id.img_game_1))
         btnList.add(findViewById(R.id.img_game_2))
@@ -70,9 +70,76 @@ class Game : AppCompatActivity() {
         transaction.replace(R.id.fr_container, Score())
         transaction.commit()
 
+        readHighscores()
 
 
-        startTimer()
+
+
+    }
+
+    private fun readHighscores(){
+
+        //CODE DUPLICATION
+    var json = ""
+
+        //Read file, not writeable. (testdata)
+        try {
+            val input = resources.openRawResource(R.raw.highscores)
+            json = input.bufferedReader().use { it.readText() }
+            Log.d("Highscore - loaded", json)
+
+        }catch (e: Exception) {
+            Log.d("Highscore", filesDir.toString())
+        }
+
+
+        //convert from string to object
+        if(json.isNotEmpty()) {
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            players = gson.fromJson(json, object : TypeToken<List<PlayerScore>>() {}.type)
+
+
+            Log.d("jsonparse", players.toString())
+        }
+
+
+        //Save file
+        saveHighscore()
+
+    }
+
+    private fun saveHighscore() {
+        try {
+            val file = File(filesDir, "highscores.json")
+            FileOutputStream(file).use {
+                val gson = GsonBuilder().setPrettyPrinting().create()
+                it.write(gson.toJson(players).toByteArray())
+            }
+        } catch (e: Exception) {
+            Log.d("Highscore", e.toString())
+        }
+    }
+
+    private fun updateHighscores(player: PlayerScore) {
+
+        players.forEach {
+            if(it.name == player.name){
+                it.score++
+                it.secondsplayed += player.secondsplayed
+            }
+        }
+        saveHighscore()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pauseTimer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resumeTimer()
     }
 
     private fun clickedImage(btn: ImageView) {
@@ -131,41 +198,53 @@ class Game : AppCompatActivity() {
     }
 
     private fun winner(player: Int) {
-//        val alert = Alert("The winner is player $player", img_background)
-//        alert.generate()
 
+        pauseTimer()
 
+        var winnerName = ""
         val bundle = Bundle()
         bundle.putInt("winner", player)
-        if(player == 1) bundle.putString("name", txtPlayer1.text.toString())
-        if(player == 2) bundle.putString("name", txtPlayer2.text.toString())
+        if(player == 1) {
+            bundle.putString("name", txtPlayer1.text.toString())
+            winnerName = txtPlayer1.text.toString()
+        }
+        if(player == 2) {
+            bundle.putString("name", txtPlayer2.text.toString())
+            winnerName = txtPlayer2.text.toString()
+        }
+
+        for(btn in btnList) btn.isClickable = false
+
+        players.forEach {
+            if(winnerName == it.name){
+                updateHighscores(it)
+            } else {
+                val newPlayer = PlayerScore("winnerName", 1, secondsUsed)
+                updateHighscores(newPlayer)
+            }
+        }
+
         val gameover = GameOver()
         gameover.arguments = bundle
-
 
         val fm = supportFragmentManager
         val transaction = fm.beginTransaction()
         transaction.replace(R.id.fr_container, gameover)
 
         transaction.commit()
-
-
-        for(btn in btnList) btn.isClickable = false
     }
 
-    fun startTimer(){
-        minutesUsed = 0
-        secondsUsed = 0
-
-        resumeTimer()
+    private fun resumeTimer(){
+        initTimer()
     }
+
 
     private fun pauseTimer(){
         this.timer.cancel()
     }
 
-    private fun resumeTimer() {
-        timer = timer("timeCounter", false, 1000, 1000) {
+    private fun initTimer() {
+        this.timer = timer("timeCounter", false, 1000, 1000) {
             secondsUsed++
             if (secondsUsed % 60 == 0) {
                 minutesUsed++
@@ -176,6 +255,7 @@ class Game : AppCompatActivity() {
                 txt_time.text = "Time played: $timeUsed"
             }
         }
+
     }
 
 }

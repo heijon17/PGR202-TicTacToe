@@ -7,8 +7,8 @@
              tools:context=".Score">
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:id="@+id/txt_highscore"
-              android:gravity="center"
               android:text="@string/highscores"
+              android:textColor="@color/white"
               android:textSize="18dp"
 
     />

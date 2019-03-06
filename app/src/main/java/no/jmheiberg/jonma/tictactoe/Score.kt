@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 
 class Score: Fragment() {
 
-    private lateinit var dataset: ArrayList<PlayerScore>
+    private var players: ArrayList<PlayerScore> = ArrayList()
     private lateinit var recyclerView: RecyclerView
 
 
@@ -36,15 +38,35 @@ class Score: Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
-        val adapter = ScoreAdapter(this.context, dataset)
+        val adapter = ScoreAdapter(this.context, players)
         recyclerView.adapter = adapter
     }
 
 
     private fun initDataset() {
-        dataset = ArrayList()
-        dataset.add(PlayerScore("Jon-Martin", 15, 150))
-        dataset.add(PlayerScore("Tom", 5, 80))
-        dataset.add(PlayerScore("TTTBot", 3, 45))
+        var json = ""
+
+        //Read file, not writeable. (testdata)
+        try {
+            val input = resources.openRawResource(R.raw.highscores)
+            json = input.bufferedReader().use { it.readText() }
+            Log.d("Highscore - loaded", json)
+
+        }catch (e: Exception) {
+            Log.d("Highscore", e.toString())
+        }
+
+
+        //convert from string to object
+        if(json.isNotEmpty()) {
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            players = gson.fromJson(json, object : TypeToken<List<PlayerScore>>() {}.type)
+
+
+            Log.d("jsonparse", players.toString())
+        }
+
+
+
     }
 }
