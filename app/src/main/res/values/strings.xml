@@ -9,6 +9,10 @@
     <string name="start">Start</string>
     <string name="time_played">Time played: 0 seconds</string>
     <string name="highscores">Highscores:</string>
+    <string name="playagain">Play again?</string>
+    <string name="wins">Wins:</string>
+    <string name="time_played_score">Total Time:</string>
+    <string name="your_turn">Your turn</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">This is the Score</string>

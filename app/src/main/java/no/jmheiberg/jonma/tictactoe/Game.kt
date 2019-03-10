@@ -1,13 +1,19 @@
 package no.jmheiberg.jonma.tictactoe
 
 
+import android.app.ActionBar
 import android.app.Person
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_game.*
 import pl.droidsonroids.gif.GifDrawable
 import java.util.*
@@ -69,6 +75,8 @@ class Game : AppCompatActivity() {
             }
         }
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         val fm = supportFragmentManager
         val transaction = fm.beginTransaction()
@@ -77,8 +85,30 @@ class Game : AppCompatActivity() {
 
         if (txtPlayer2.text == "TTTBot") vsCpu = true
 
+        setTurn()
+
         board = Array(9) { Player.Blank }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if(item?.itemId == android.R.id.home) finish()
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setTurn() {
+        val anim: Animation = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = 500
+        anim.repeatCount = Animation.INFINITE
+        anim.repeatMode = Animation.REVERSE
+        if (playersTurn == 1) {
+            txt_p1_turn.startAnimation(anim)
+            txt_p2_turn.clearAnimation()
+        }
+        if (playersTurn == 2) {
+            txt_p2_turn.startAnimation(anim)
+            txt_p1_turn.clearAnimation()
+        }
     }
 
 
@@ -123,7 +153,7 @@ class Game : AppCompatActivity() {
 
 
         calculateWinner()
-
+        setTurn()
         if (vsCpu && playersTurn == 2) nextMove()
     }
 
@@ -163,6 +193,8 @@ class Game : AppCompatActivity() {
         if (oPos.contains(1) && oPos.contains(5) && oPos.contains(9)) winner(2)
         if (oPos.contains(3) && oPos.contains(5) && oPos.contains(7)) winner(2)
 
+        if (oPos.size + xPos.size == 9) winner(0)
+
     }
 
     private fun winner(player: Int) {
@@ -180,6 +212,9 @@ class Game : AppCompatActivity() {
         if(player == 2) {
             gameOverBundle.putString("name", txtPlayer2.text.toString())
             winnerName = txtPlayer2.text.toString()
+        }
+        if(player == 0){
+            TODO("Implement draw")
         }
 
         for(btn in btnList) btn.isClickable = false

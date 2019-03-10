@@ -7,6 +7,24 @@
         android:layout_height="match_parent"
         android:background="@color/navy"
         tools:context=".Game">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_p2_turn"
+            android:fontFamily="@font/architects_daughter" android:textSize="18sp"
+            android:text="@string/your_turn"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@+id/img_background"
+            app:layout_constraintTop_toTopOf="@+id/txt_p2" android:visibility="invisible"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_p1_turn"
+            android:fontFamily="@font/architects_daughter" android:textSize="18sp"
+            android:text="@string/your_turn"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="@+id/img_background"
+            app:layout_constraintTop_toTopOf="@+id/txt_p1" android:visibility="invisible"/>
     <ImageView
             android:layout_width="329dp"
             android:layout_height="329dp" app:srcCompat="@drawable/tttbackground"
