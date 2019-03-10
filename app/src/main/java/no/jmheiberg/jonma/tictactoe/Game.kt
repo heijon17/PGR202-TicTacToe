@@ -213,19 +213,19 @@ class Game : AppCompatActivity() {
             gameOverBundle.putString("name", txtPlayer2.text.toString())
             winnerName = txtPlayer2.text.toString()
         }
-        if(player == 0){
-            TODO("Implement draw")
-        }
 
         for(btn in btnList) btn.isClickable = false
 
         //pass winner to score
         val scoreBundle = Bundle()
 
-        scoreBundle.putParcelable("winner", PlayerScore(winnerName, 1, secondsUsed))
-        score.arguments = scoreBundle
-        score.update()
+        if (player != 0) {
+            scoreBundle.putParcelable("winner", PlayerScore(winnerName, 1, secondsUsed))
+            score.arguments = scoreBundle
+            score.update()
+        }
 
+        
         //show gameover
         val gameover = GameOver()
         gameover.arguments = gameOverBundle

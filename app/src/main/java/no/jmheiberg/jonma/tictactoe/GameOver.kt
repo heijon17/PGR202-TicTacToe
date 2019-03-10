@@ -34,9 +34,14 @@ class GameOver: Fragment() {
 
         val txtWinner: TextView = view.findViewById(R.id.txt_winner)
 
-        val winner = if(player == 1) "x" else "o"
-
+        var winner = ""
+        if(player == 1) winner = "x"
+        if(player == 2) winner = "o"
         txtWinner.text = "The winner is $name ($winner)"
+        if(player == 0) {
+            txtWinner.text = "It's a draw, please try again"
+        }
+
 
 
     }
