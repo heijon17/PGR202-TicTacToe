@@ -225,7 +225,7 @@ class Game : AppCompatActivity() {
             score.update()
         }
 
-        
+
         //show gameover
         val gameover = GameOver()
         gameover.arguments = gameOverBundle
