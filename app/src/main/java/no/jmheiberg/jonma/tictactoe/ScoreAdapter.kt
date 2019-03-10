@@ -10,10 +10,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 
-class ScoreAdapter(context: Context?, dataset: ArrayList<PlayerScore> ) : RecyclerView.Adapter<ScoreAdapter.ViewHolder>() {
+class ScoreAdapter(context: Context?) : RecyclerView.Adapter<ScoreAdapter.ViewHolder>() {
 
-    private val data = dataset
+
     private val mContext = context
+    var players: List<PlayerScore> = ArrayList()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,12 +24,14 @@ class ScoreAdapter(context: Context?, dataset: ArrayList<PlayerScore> ) : Recycl
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return players.size
     }
+
+
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        val player = data[position]
+        val player = players[position]
 
         viewHolder.txtName.text = "${position + 1}) ${player.name}:"
         viewHolder.txtScore.text = "${player.score}"

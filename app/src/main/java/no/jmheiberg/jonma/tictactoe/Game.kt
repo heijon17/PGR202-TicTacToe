@@ -1,36 +1,41 @@
 package no.jmheiberg.jonma.tictactoe
 
 
+import android.app.Person
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
+import android.os.Handler
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_game.*
 import pl.droidsonroids.gif.GifDrawable
-import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 import kotlin.concurrent.timer
 
 
 class Game : AppCompatActivity() {
+
+    lateinit var board: Array<Player>
+
+    var vsCpu = false
 
     var playersTurn = 1
 
     var secondsUsed = 0
     var minutesUsed = 0
     var timer = Timer()
+    var score = Score()
 
     val btnList = ArrayList<ImageView>()
     var xPos = ArrayList<Int>()
     var oPos = ArrayList<Int>()
 
     var players: List<PlayerScore> = ArrayList()
+
+    private lateinit var highscores: Highscores
 
     private lateinit var txtPlayer1: TextView
     private lateinit var txtPlayer2: TextView
@@ -67,70 +72,15 @@ class Game : AppCompatActivity() {
 
         val fm = supportFragmentManager
         val transaction = fm.beginTransaction()
-        transaction.replace(R.id.fr_container, Score())
+        transaction.replace(R.id.fr_container, score)
         transaction.commit()
 
-        readHighscores()
+        if (txtPlayer2.text == "TTTBot") vsCpu = true
 
-
-
-
-    }
-
-    private fun readHighscores(){
-
-        //CODE DUPLICATION
-    var json = ""
-
-        //Read file, not writeable. (testdata)
-        try {
-            val input = resources.openRawResource(R.raw.highscores)
-            json = input.bufferedReader().use { it.readText() }
-            Log.d("Highscore - loaded", json)
-
-        }catch (e: Exception) {
-            Log.d("Highscore", filesDir.toString())
-        }
-
-
-        //convert from string to object
-        if(json.isNotEmpty()) {
-            val gson = GsonBuilder().setPrettyPrinting().create()
-            players = gson.fromJson(json, object : TypeToken<List<PlayerScore>>() {}.type)
-
-
-            Log.d("jsonparse", players.toString())
-        }
-
-
-        //Save file
-        saveHighscore()
+        board = Array(9) { Player.Blank }
 
     }
 
-    private fun saveHighscore() {
-        try {
-            val file = File(filesDir, "highscores.json")
-            FileOutputStream(file).use {
-                val gson = GsonBuilder().setPrettyPrinting().create()
-                it.write(gson.toJson(players).toByteArray())
-            }
-        } catch (e: Exception) {
-            Log.d("Highscore", e.toString())
-        }
-    }
-
-    private fun updateHighscores(player: PlayerScore) {
-
-        players.forEach {
-            if(it.name == player.name){
-                it.score++
-                it.secondsplayed += player.secondsplayed
-            }
-        }
-        saveHighscore()
-
-    }
 
     override fun onPause() {
         super.onPause()
@@ -161,19 +111,36 @@ class Game : AppCompatActivity() {
         if(playersTurn == 1){
             btn.setImageDrawable(GifDrawable(resources, R.drawable.tttx))
             xPos.add(position)
+            board[position-1] = Player.Human
             playersTurn = 2
-        } else {
+        }
+        else if(playersTurn == 2){
             btn.setImageDrawable(GifDrawable(resources, R.drawable.ttto))
             oPos.add(position)
+            board[position-1] = Player.Computer
             playersTurn = 1
         }
 
+
         calculateWinner()
 
-
+        if (vsCpu && playersTurn == 2) nextMove()
     }
 
+    private fun nextMove() {
+        Handler().postDelayed ({
+
+            var pos = (1..9).random()
+            while (oPos.contains(pos) || xPos.contains(pos) || playersTurn == 0) {
+                pos = (1..9).random()
+            }
+            clickedImage(btnList[pos-1])
+        }, 1000)
+    }
+
+
     private fun calculateWinner() {
+
         if (xPos.contains(1) && xPos.contains(2) && xPos.contains(3)) winner(1)
         if (xPos.contains(4) && xPos.contains(5) && xPos.contains(6)) winner(1)
         if (xPos.contains(7) && xPos.contains(8) && xPos.contains(9)) winner(1)
@@ -195,42 +162,41 @@ class Game : AppCompatActivity() {
 
         if (oPos.contains(1) && oPos.contains(5) && oPos.contains(9)) winner(2)
         if (oPos.contains(3) && oPos.contains(5) && oPos.contains(7)) winner(2)
+
     }
 
     private fun winner(player: Int) {
 
         pauseTimer()
+        playersTurn = 0
 
         var winnerName = ""
-        val bundle = Bundle()
-        bundle.putInt("winner", player)
+        val gameOverBundle = Bundle()
+        gameOverBundle.putInt("winner", player)
         if(player == 1) {
-            bundle.putString("name", txtPlayer1.text.toString())
+            gameOverBundle.putString("name", txtPlayer1.text.toString())
             winnerName = txtPlayer1.text.toString()
         }
         if(player == 2) {
-            bundle.putString("name", txtPlayer2.text.toString())
+            gameOverBundle.putString("name", txtPlayer2.text.toString())
             winnerName = txtPlayer2.text.toString()
         }
 
         for(btn in btnList) btn.isClickable = false
 
-        players.forEach {
-            if(winnerName == it.name){
-                updateHighscores(it)
-            } else {
-                val newPlayer = PlayerScore("winnerName", 1, secondsUsed)
-                updateHighscores(newPlayer)
-            }
-        }
+        //pass winner to score
+        val scoreBundle = Bundle()
 
+        scoreBundle.putParcelable("winner", PlayerScore(winnerName, 1, secondsUsed))
+        score.arguments = scoreBundle
+        score.update()
+
+        //show gameover
         val gameover = GameOver()
-        gameover.arguments = bundle
-
+        gameover.arguments = gameOverBundle
         val fm = supportFragmentManager
         val transaction = fm.beginTransaction()
-        transaction.replace(R.id.fr_container, gameover)
-
+        transaction.add(R.id.fr_container, gameover)
         transaction.commit()
     }
 
