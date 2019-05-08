@@ -7,7 +7,7 @@ import android.view.View
  * Util class for creating Alerts
  */
 
-class Alert (val msg: String, val view: View) {
+class Alert(private val msg: String, private val view: View) {
 
     fun generate() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(view.context)

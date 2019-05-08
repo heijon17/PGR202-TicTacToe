@@ -2,8 +2,8 @@ package no.jmheiberg.jonma.tictactoe
 
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.Switch
 import kotlinx.android.synthetic.main.register_names.*
@@ -38,6 +38,7 @@ class RegisterNames : AppCompatActivity() {
         val intent = Intent(this@RegisterNames, Game::class.java )
         when {
             p1Name.isEmpty() -> alert("Player 1 needs a name")
+            p1Name == "TTTBot" -> alert("Player 1 cannot be named $p1Name")
             p2Name.isEmpty() -> alert("Player 2 needs a name")
             else -> {
                 intent.putExtra("p1", p1Name)

@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 
-data class PlayerScore(val name: String, var score: Int, var secondsplayed: Int) : Parcelable{
+data class PlayerScore(val name: String, var score: Int, var secondsplayed: Int) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readInt(),
@@ -12,7 +12,7 @@ data class PlayerScore(val name: String, var score: Int, var secondsplayed: Int)
     )
 
 
-    fun getTimePlayed() : String{
+    fun getTimePlayed(): String {
 
         var minutes = 0
         var seconds = 0

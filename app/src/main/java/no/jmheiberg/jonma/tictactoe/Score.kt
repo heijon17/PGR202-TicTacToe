@@ -9,14 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 
 
-class Score: Fragment() {
+class Score : Fragment() {
 
 
     private lateinit var recyclerView: RecyclerView
 
     lateinit var highscores: Highscores
     lateinit var adapter: ScoreAdapter
-
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,9 +35,9 @@ class Score: Fragment() {
         adapter.players = highscores.players
     }
 
-    fun update(){
+    fun update() {
         val winner = arguments?.getParcelable<PlayerScore>("winner")
-        if(winner != null){
+        if (winner != null) {
             highscores.updateHighscores(winner)
             adapter.notifyDataSetChanged()
         }

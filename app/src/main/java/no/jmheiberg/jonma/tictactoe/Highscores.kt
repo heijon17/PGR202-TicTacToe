@@ -8,7 +8,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class Highscores(val context: Context?, val adapter: ScoreAdapter) {
+class Highscores(private val context: Context?, private val adapter: ScoreAdapter) {
 
     var players: ArrayList<PlayerScore> = ArrayList()
 
@@ -16,7 +16,7 @@ class Highscores(val context: Context?, val adapter: ScoreAdapter) {
         initHighscores()
     }
 
-    fun initHighscores() {
+    private fun initHighscores() {
         var json = ""
 
         //Read file
@@ -41,7 +41,7 @@ class Highscores(val context: Context?, val adapter: ScoreAdapter) {
     fun updateHighscores(player: PlayerScore) {
 
         var existingPlayer = false
-        for (item in players){
+        for (item in players) {
             if (item.name == player.name) {
                 item.score++
                 item.secondsplayed += player.secondsplayed
@@ -56,7 +56,7 @@ class Highscores(val context: Context?, val adapter: ScoreAdapter) {
 
     }
 
-    fun saveHighscore() {
+    private fun saveHighscore() {
         try {
             val file = File(context?.filesDir, "highscores.json")
             FileOutputStream(file).use {
@@ -69,6 +69,6 @@ class Highscores(val context: Context?, val adapter: ScoreAdapter) {
     }
 
     private fun sortByWins() {
-        players.sortByDescending {it.score}
+        players.sortByDescending { it.score }
     }
 }

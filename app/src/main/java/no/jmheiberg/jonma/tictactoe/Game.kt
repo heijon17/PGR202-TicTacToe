@@ -1,24 +1,18 @@
 package no.jmheiberg.jonma.tictactoe
 
 
-import android.app.ActionBar
-import android.app.Person
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_game.*
 import pl.droidsonroids.gif.GifDrawable
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 import kotlin.concurrent.timer
 
 
@@ -151,10 +145,13 @@ class Game : AppCompatActivity() {
             playersTurn = 1
         }
 
+        if (calculateWinner() == null) {
+            setTurn()
+            if (vsCpu && playersTurn == 2) nextMove()
+        } else {
+            winner(calculateWinner())
+        }
 
-        calculateWinner()
-        setTurn()
-        if (vsCpu && playersTurn == 2) nextMove()
     }
 
     private fun nextMove() {
@@ -169,42 +166,43 @@ class Game : AppCompatActivity() {
     }
 
 
-    private fun calculateWinner() {
+    private fun calculateWinner() : Int? {
 
-        if (xPos.contains(1) && xPos.contains(2) && xPos.contains(3)) winner(1)
-        if (xPos.contains(4) && xPos.contains(5) && xPos.contains(6)) winner(1)
-        if (xPos.contains(7) && xPos.contains(8) && xPos.contains(9)) winner(1)
+        if (xPos.contains(1) && xPos.contains(2) && xPos.contains(3)) return 1
+        if (xPos.contains(4) && xPos.contains(5) && xPos.contains(6)) return 1
+        if (xPos.contains(7) && xPos.contains(8) && xPos.contains(9)) return 1
 
-        if (xPos.contains(1) && xPos.contains(4) && xPos.contains(7)) winner(1)
-        if (xPos.contains(2) && xPos.contains(5) && xPos.contains(8)) winner(1)
-        if (xPos.contains(3) && xPos.contains(6) && xPos.contains(9)) winner(1)
+        if (xPos.contains(1) && xPos.contains(4) && xPos.contains(7)) return 1
+        if (xPos.contains(2) && xPos.contains(5) && xPos.contains(8)) return 1
+        if (xPos.contains(3) && xPos.contains(6) && xPos.contains(9)) return 1
 
-        if (xPos.contains(1) && xPos.contains(5) && xPos.contains(9)) winner(1)
-        if (xPos.contains(3) && xPos.contains(5) && xPos.contains(7)) winner(1)
+        if (xPos.contains(1) && xPos.contains(5) && xPos.contains(9)) return 1
+        if (xPos.contains(3) && xPos.contains(5) && xPos.contains(7)) return 1
 
-        if (oPos.contains(1) && oPos.contains(2) && oPos.contains(3)) winner(2)
-        if (oPos.contains(4) && oPos.contains(5) && oPos.contains(6)) winner(2)
-        if (oPos.contains(7) && oPos.contains(8) && oPos.contains(9)) winner(2)
+        if (oPos.contains(1) && oPos.contains(2) && oPos.contains(3)) return 2
+        if (oPos.contains(4) && oPos.contains(5) && oPos.contains(6)) return 2
+        if (oPos.contains(7) && oPos.contains(8) && oPos.contains(9)) return 2
 
-        if (oPos.contains(1) && oPos.contains(4) && oPos.contains(7)) winner(2)
-        if (oPos.contains(2) && oPos.contains(5) && oPos.contains(8)) winner(2)
-        if (oPos.contains(3) && oPos.contains(6) && oPos.contains(9)) winner(2)
+        if (oPos.contains(1) && oPos.contains(4) && oPos.contains(7)) return 2
+        if (oPos.contains(2) && oPos.contains(5) && oPos.contains(8)) return 2
+        if (oPos.contains(3) && oPos.contains(6) && oPos.contains(9)) return 2
 
-        if (oPos.contains(1) && oPos.contains(5) && oPos.contains(9)) winner(2)
-        if (oPos.contains(3) && oPos.contains(5) && oPos.contains(7)) winner(2)
+        if (oPos.contains(1) && oPos.contains(5) && oPos.contains(9)) return 2
+        if (oPos.contains(3) && oPos.contains(5) && oPos.contains(7)) return 2
 
-        if (oPos.size + xPos.size == 9) winner(0)
-
+        //board is full, draw
+        if (oPos.size + xPos.size == 9) return 0
+        return null
     }
 
-    private fun winner(player: Int) {
+    private fun winner(player: Int?) {
 
         pauseTimer()
         playersTurn = 0
 
         var winnerName = ""
         val gameOverBundle = Bundle()
-        gameOverBundle.putInt("winner", player)
+        gameOverBundle.putInt("winner", player!!)
         if(player == 1) {
             gameOverBundle.putString("name", txtPlayer1.text.toString())
             winnerName = txtPlayer1.text.toString()
